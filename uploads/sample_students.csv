@@ -1,0 +1,5 @@
+username,email,password,matric_no,first_name,middle_name,last_name,department_code,programme_code,level,course_codes
+john231,john231@pau.edu.ng,password123,23120111011,John,Ade,Okafor,CSC,BSC-CS,300,"DTS304,CSC313"
+mary231,mary231@pau.edu.ng,password123,23120111012,Mary,,Balogun,CSC,BSC-CS,300,"DTS304,CSC309"
+david231,david231@pau.edu.ng,password123,23120111013,David,Chuka,Eze,CSC,BSC-CS,300,"DTS304,CSC310"
+sarah231,sarah231@pau.edu.ng,password123,23120111014,Sarah,Amina,Yusuf,SEN,BSC-SE,300,"DTS304,CSC313"
