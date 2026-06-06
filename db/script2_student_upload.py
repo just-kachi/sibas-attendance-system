@@ -7,7 +7,7 @@ import bcrypt
 
 DB_NAME = "sibas_db"
 DB_USER = "postgres"
-DB_PASSWORD = "kachi123"
+DB_PASSWORD = "password"
 DB_HOST = "localhost"
 DB_PORT = "5432"
 
