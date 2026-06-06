@@ -42,6 +42,10 @@ from utils.admin import (
     update_student,
     get_student_course_ids,
     update_student_course_enrollments,
+    set_user_active_status,
+    delete_user,
+    get_all_students_with_status,
+    get_all_lecturers_with_status,
 )
 
 
