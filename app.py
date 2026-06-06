@@ -23,6 +23,7 @@ from utils.reports import (
     get_department_summary,
     get_all_students,
     get_all_courses,
+    generate_pdf_report,
 )
 from utils.admin import (
     get_departments,
