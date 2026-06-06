@@ -5,7 +5,7 @@ from psycopg2.extras import RealDictCursor
 DB_CONFIG = {
     "dbname": "sibas_db",
     "user": "postgres",
-    "password": "kachi123",
+    "password": "password",
     "host": "localhost",
     "port": "5432",
 }
