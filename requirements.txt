@@ -2,4 +2,4 @@ psycopg2-binary
 bcrypt
 pandas
 streamlit
-
+reportlab

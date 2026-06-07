@@ -23,6 +23,7 @@ from utils.reports import (
     get_department_summary,
     get_all_students,
     get_all_courses,
+    generate_pdf_report,
 )
 from utils.admin import (
     get_departments,
@@ -42,6 +43,10 @@ from utils.admin import (
     get_student_course_ids,
     update_student_course_enrollments,
     remove_lecturer_from_course,
+    set_user_active_status,
+    delete_user,
+    get_all_students_with_status,
+    get_all_lecturers_with_status,
 )
 
 
@@ -1313,6 +1318,138 @@ def show_admin_reports():
     )
 
 
+def show_admin_manage_users():
+    st.markdown('<div class="main-title">Manage User Accounts</div>', unsafe_allow_html=True)
+
+    tab1, tab2 = st.tabs(["Students", "Lecturers"])
+
+    # ----------------------------------------------------------
+    # STUDENTS TAB
+    # ----------------------------------------------------------
+    with tab1:
+        st.markdown("### Student Accounts")
+
+        students = get_all_students_with_status()
+
+        if not students:
+            st.info("No students found.")
+        else:
+            for student in students:
+                col1, col2, col3, col4 = st.columns([3, 2, 1, 1])
+
+                with col1:
+                    st.write(f"**{student['first_name']} {student['last_name']}**")
+                    st.caption(f"{student['matric_no']} · {student['username']} · {student['department_name']}")
+
+                with col2:
+                    if student["is_active"]:
+                        st.success("Active")
+                    else:
+                        st.error("Inactive")
+
+                with col3:
+                    if student["is_active"]:
+                        if st.button(
+                            "Deactivate",
+                            key=f"deactivate_student_{student['user_id']}",
+                        ):
+                            try:
+                                set_user_active_status(student["user_id"], False)
+                                st.warning(f"{student['first_name']} {student['last_name']} deactivated.")
+                                st.rerun()
+                            except Exception as e:
+                                st.error(f"Error: {e}")
+                    else:
+                        if st.button(
+                            "Activate",
+                            key=f"activate_student_{student['user_id']}",
+                        ):
+                            try:
+                                set_user_active_status(student["user_id"], True)
+                                st.success(f"{student['first_name']} {student['last_name']} activated.")
+                                st.rerun()
+                            except Exception as e:
+                                st.error(f"Error: {e}")
+
+                with col4:
+                    if st.button(
+                        "Delete",
+                        key=f"delete_student_{student['user_id']}",
+                        type="primary",
+                    ):
+                        try:
+                            delete_user(student["user_id"])
+                            st.success(f"Student {student['matric_no']} deleted.")
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Error: {e}")
+
+                st.divider()
+
+    # ----------------------------------------------------------
+    # LECTURERS TAB
+    # ----------------------------------------------------------
+    with tab2:
+        st.markdown("### Lecturer Accounts")
+
+        lecturers = get_all_lecturers_with_status()
+
+        if not lecturers:
+            st.info("No lecturers found.")
+        else:
+            for lecturer in lecturers:
+                col1, col2, col3, col4 = st.columns([3, 2, 1, 1])
+
+                with col1:
+                    st.write(f"**{lecturer['first_name']} {lecturer['last_name']}**")
+                    st.caption(f"{lecturer['staff_no']} · {lecturer['username']} · {lecturer['department_name']}")
+
+                with col2:
+                    if lecturer["is_active"]:
+                        st.success("Active")
+                    else:
+                        st.error("Inactive")
+
+                with col3:
+                    if lecturer["is_active"]:
+                        if st.button(
+                            "Deactivate",
+                            key=f"deactivate_lecturer_{lecturer['user_id']}",
+                        ):
+                            try:
+                                set_user_active_status(lecturer["user_id"], False)
+                                st.warning(f"{lecturer['first_name']} {lecturer['last_name']} deactivated.")
+                                st.rerun()
+                            except Exception as e:
+                                st.error(f"Error: {e}")
+                    else:
+                        if st.button(
+                            "Activate",
+                            key=f"activate_lecturer_{lecturer['user_id']}",
+                        ):
+                            try:
+                                set_user_active_status(lecturer["user_id"], True)
+                                st.success(f"{lecturer['first_name']} {lecturer['last_name']} activated.")
+                                st.rerun()
+                            except Exception as e:
+                                st.error(f"Error: {e}")
+
+                with col4:
+                    if st.button(
+                        "Delete",
+                        key=f"delete_lecturer_{lecturer['user_id']}",
+                        type="primary",
+                    ):
+                        try:
+                            delete_user(lecturer["user_id"])
+                            st.success(f"Lecturer {lecturer['staff_no']} deleted.")
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Error: {e}")
+
+                st.divider()
+
+
 # ============================================================
 # SIDEBAR NAVIGATION
 # ============================================================
@@ -1365,6 +1502,7 @@ def logged_in_sidebar():
                 "Lecturers",
                 "Courses",
                 "Reports",
+                "Manage Users",
                 "Help & Support",
             ],
         )
@@ -1437,6 +1575,8 @@ else:
             show_admin_courses()
         elif selected_page == "Reports":
             show_admin_reports()
+        elif selected_page == "Manage Users":
+            show_admin_manage_users()
         elif selected_page == "Help & Support":
             show_help_page()
 

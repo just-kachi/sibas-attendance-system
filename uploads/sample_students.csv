@@ -1,5 +1,11 @@
-username,email,password,matric_no,first_name,middle_name,last_name,department_code,programme_code,level,course_codes
-john231,john231@pau.edu.ng,password123,23120111011,John,Ade,Okafor,CSC,BSC-CS,300,"DTS304,CSC313"
-mary231,mary231@pau.edu.ng,password123,23120111012,Mary,,Balogun,CSC,BSC-CS,300,"DTS304,CSC309"
-david231,david231@pau.edu.ng,password123,23120111013,David,Chuka,Eze,CSC,BSC-CS,300,"DTS304,CSC310"
-sarah231,sarah231@pau.edu.ng,password123,23120111014,Sarah,Amina,Yusuf,SEN,BSC-SE,300,"DTS304,CSC313"
+username,email,password,matric_no,first_name,middle_name,last_name,department_code,programme_code,level,course_codes,,status
+john231,john231@pau.edu.ng,password123,23120111011,John,Ade,Okafor,CSC,BSC-CS,300,"DTS304,CSC313",,Present
+mary231,mary231@pau.edu.ng,password123,23120111012,Mary,,Balogun,CSC,BSC-CS,300,"DTS304,CSC313",,Present
+david231,david231@pau.edu.ng,password123,23120111013,David,Chuka,Eze,CSC,BSC-CS,300,"DTS304,CSC313",,Present
+sarah231,sarah231@pau.edu.ng,password123,23120111014,Sarah,Amina,Yusuf,SEN,BSC-SE,300,"DTS304,CSC313",,Present
+kachi123,kachi231@pau.edu.ng,password124,23120111015,kachi,,obi,SEN,BSC-SE,300,"CSC 309,CSC313",,Present
+chike123,chike231@pau.edu.ng,password125,23120111016,chike,,ewo,SEN,BSC-SE,300,"CSC 309,CSC313",,Present
+catherine123,catherine231@pau.edu.ng,password126,23120111017,catherine,,ant,CSC,BSC-CS,300,"CSC 310,CSC309",,Present
+chidi123,chidi231@pau.edu.ng,password127,23120111018,chidi,,tuff,CSC,BSC-CS,300,"DTS304,CSC313",,Present
+raph123,raph231@pau.edu.ng,password128,23120111019,raph,,bucket,SEN,BSC-SE,300,"DTS304,CSC310",,Present
+imran 123,imran231@pau.edu.ng,password129,23120111020,imran,,rice,SEN,BSC-SE,300,"DTS304,CSC309",,Present

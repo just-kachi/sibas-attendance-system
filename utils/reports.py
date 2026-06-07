@@ -1,3 +1,13 @@
+from io import BytesIO
+from datetime import datetime
+
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER
+
 from utils.db import fetch_one, fetch_all
 
 
@@ -201,3 +211,116 @@ def get_all_courses():
     """
 
     return fetch_all(query)
+
+
+def generate_pdf_report(title: str, subtitle: str, columns: list, rows: list) -> bytes:
+    """
+    Generates a styled PDF report as bytes.
+
+    Args:
+        title:    Main heading e.g. 'Course Attendance Report'
+        subtitle: Sub-heading e.g. 'DTS304 - Data Management I'
+        columns:  List of column header strings
+        rows:     List of lists — each inner list is one data row
+
+    Returns:
+        PDF file as bytes (ready for st.download_button)
+    """
+
+    buffer = BytesIO()
+
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=2 * cm,
+        leftMargin=2 * cm,
+        topMargin=2 * cm,
+        bottomMargin=2 * cm,
+    )
+
+    styles = getSampleStyleSheet()
+
+    title_style = ParagraphStyle(
+        "ReportTitle",
+        parent=styles["Heading1"],
+        fontSize=18,
+        textColor=colors.HexColor("#003366"),
+        spaceAfter=6,
+        alignment=TA_CENTER,
+    )
+
+    subtitle_style = ParagraphStyle(
+        "ReportSubtitle",
+        parent=styles["Normal"],
+        fontSize=11,
+        textColor=colors.HexColor("#555555"),
+        spaceAfter=4,
+        alignment=TA_CENTER,
+    )
+
+    meta_style = ParagraphStyle(
+        "ReportMeta",
+        parent=styles["Normal"],
+        fontSize=9,
+        textColor=colors.HexColor("#888888"),
+        spaceAfter=16,
+        alignment=TA_CENTER,
+    )
+
+    generated_on = datetime.now().strftime("%d %B %Y, %I:%M %p")
+
+    elements = [
+        Paragraph("SIBAS — Attendance Report", title_style),
+        Paragraph(title, subtitle_style),
+        Paragraph(subtitle, subtitle_style),
+        Paragraph(f"Generated: {generated_on}", meta_style),
+    ]
+
+    # Build table: header row + data rows
+    table_data = [columns]
+    for row in rows:
+        table_data.append([str(cell) if cell is not None else "" for cell in row])
+
+    # Spread columns evenly across the page width
+    page_width = A4[0] - 4 * cm
+    col_width = page_width / len(columns)
+    col_widths = [col_width] * len(columns)
+
+    table = Table(table_data, colWidths=col_widths, repeatRows=1)
+
+    table.setStyle(TableStyle([
+        # Header row styling
+        ("BACKGROUND",      (0, 0), (-1, 0),  colors.HexColor("#003366")),
+        ("TEXTCOLOR",       (0, 0), (-1, 0),  colors.white),
+        ("FONTNAME",        (0, 0), (-1, 0),  "Helvetica-Bold"),
+        ("FONTSIZE",        (0, 0), (-1, 0),  9),
+        ("BOTTOMPADDING",   (0, 0), (-1, 0),  8),
+        ("TOPPADDING",      (0, 0), (-1, 0),  8),
+        # Data rows styling
+        ("FONTNAME",        (0, 1), (-1, -1), "Helvetica"),
+        ("FONTSIZE",        (0, 1), (-1, -1), 8),
+        ("TOPPADDING",      (0, 1), (-1, -1), 5),
+        ("BOTTOMPADDING",   (0, 1), (-1, -1), 5),
+        # Alternating row colours
+        ("ROWBACKGROUNDS",  (0, 1), (-1, -1), [colors.white, colors.HexColor("#f0f4f8")]),
+        # Grid lines
+        ("GRID",            (0, 0), (-1, -1), 0.4, colors.HexColor("#cccccc")),
+        ("ALIGN",           (0, 0), (-1, -1), "LEFT"),
+        ("VALIGN",          (0, 0), (-1, -1), "MIDDLE"),
+        ("WORDWRAP",        (0, 0), (-1, -1), True),
+    ]))
+
+    elements.append(table)
+    elements.append(Spacer(1, 12))
+
+    total_style = ParagraphStyle(
+        "Total",
+        parent=styles["Normal"],
+        fontSize=9,
+        textColor=colors.HexColor("#333333"),
+    )
+    elements.append(Paragraph(f"Total records: {len(rows)}", total_style))
+
+    doc.build(elements)
+    buffer.seek(0)
+    return buffer.read()

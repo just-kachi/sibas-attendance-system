@@ -657,3 +657,59 @@ def remove_lecturer_from_course(lecturer_course_id: int):
     """
 
     execute_query(query, (lecturer_course_id,))
+def set_user_active_status(user_id: int, is_active: bool):
+    query = """
+        UPDATE users
+        SET is_active = %s,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE user_id = %s
+    """
+    execute_query(query, (is_active, user_id))
+
+
+def delete_user(user_id: int):
+    query = """
+        DELETE FROM users
+        WHERE user_id = %s
+    """
+    execute_query(query, (user_id,))
+
+
+def get_all_students_with_status():
+    query = """
+        SELECT
+            s.student_id,
+            u.user_id,
+            u.username,
+            u.email,
+            u.is_active,
+            s.matric_no,
+            s.first_name,
+            s.last_name,
+            d.department_name
+        FROM students s
+        JOIN users u ON s.user_id = u.user_id
+        JOIN departments d ON s.department_id = d.department_id
+        ORDER BY s.matric_no
+    """
+    return fetch_all(query)
+
+
+def get_all_lecturers_with_status():
+    query = """
+        SELECT
+            l.lecturer_id,
+            u.user_id,
+            u.username,
+            u.email,
+            u.is_active,
+            l.staff_no,
+            l.first_name,
+            l.last_name,
+            d.department_name
+        FROM lecturers l
+        JOIN users u ON l.user_id = u.user_id
+        JOIN departments d ON l.department_id = d.department_id
+        ORDER BY l.staff_no
+    """
+    return fetch_all(query)
