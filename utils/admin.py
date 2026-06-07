@@ -643,3 +643,17 @@ def update_student_course_enrollments(
                 semester,
             ),
         )
+
+def remove_lecturer_from_course(lecturer_course_id: int):
+    """
+    Removes a lecturer-course assignment.
+    This does not delete the lecturer or the course.
+    It only removes the link between them.
+    """
+
+    query = """
+        DELETE FROM lecturer_courses
+        WHERE lecturer_course_id = %s
+    """
+
+    execute_query(query, (lecturer_course_id,))

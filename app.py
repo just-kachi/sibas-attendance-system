@@ -41,6 +41,7 @@ from utils.admin import (
     update_student,
     get_student_course_ids,
     update_student_course_enrollments,
+    remove_lecturer_from_course,
 )
 
 
@@ -1139,6 +1140,47 @@ def show_admin_lecturers():
             except Exception as error:
                 st.error(f"Error: {error}")
 
+        st.markdown("---")
+    st.markdown("## Remove Lecturer from Course")
+
+    assignments_for_removal = get_lecturer_course_assignments()
+
+    if not assignments_for_removal:
+        st.info("No lecturer-course assignments available to remove.")
+    else:
+        assignment_options = [
+            f"{assignment['lecturer_course_id']} - {assignment['first_name']} {assignment['last_name']} - {assignment['course_code']} - {assignment['course_title']} ({assignment['academic_session']}, {assignment['semester']})"
+            for assignment in assignments_for_removal
+        ]
+
+        selected_assignment = st.selectbox(
+            "Select Assignment to Remove",
+            assignment_options,
+            key="remove_lecturer_assignment_select",
+        )
+
+        selected_lecturer_course_id = int(selected_assignment.split(" - ")[0])
+
+        confirm_remove = st.checkbox(
+            "I understand this will remove this lecturer from the selected course.",
+            key="confirm_remove_lecturer_assignment",
+        )
+
+        if st.button("Remove Lecturer from Course"):
+            try:
+                if not confirm_remove:
+                    st.error("Please tick the confirmation checkbox before removing.")
+                    return
+
+                remove_lecturer_from_course(selected_lecturer_course_id)
+
+                st.success("Lecturer removed from course successfully.")
+                st.rerun()
+
+            except Exception as error:
+                st.error(f"Error: {error}")
+    
+    
     st.markdown("---")
     st.markdown("## Edit Lecturer")
 
